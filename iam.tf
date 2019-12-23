@@ -51,4 +51,3 @@ resource "aws_iam_role_policy_attachment" "awsconfig-attach-localconfig-policy" 
   role       = aws_iam_role.awsconfig_role.name
   policy_arn = aws_iam_policy.awsconfig_policy.arn
 }
-

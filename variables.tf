@@ -40,4 +40,3 @@ variable "config_regions" {
     "sa-east-1",
   ]
 }
-
