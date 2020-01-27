@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "awsconfig_policy_doc" {
+data "aws_iam_policy_document" "awsconfig" {
   statement {
     effect  = "Allow"
     actions = ["s3:PutObject"]
@@ -20,12 +20,12 @@ data "aws_iam_policy_document" "awsconfig_policy_doc" {
   }
 }
 
-resource "aws_iam_policy" "awsconfig_policy" {
+resource "aws_iam_policy" "awsconfig" {
   name_prefix = "awsconfig-"
-  policy      = data.aws_iam_policy_document.awsconfig_policy_doc.json
+  policy      = data.aws_iam_policy_document.awsconfig.json
 }
 
-data "aws_iam_policy_document" "awsconfig_assume_policy" {
+data "aws_iam_policy_document" "assume" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
@@ -37,17 +37,17 @@ data "aws_iam_policy_document" "awsconfig_assume_policy" {
   }
 }
 
-resource "aws_iam_role" "awsconfig_role" {
+resource "aws_iam_role" "awsconfig" {
   name_prefix        = "aws-config-role"
-  assume_role_policy = data.aws_iam_policy_document.awsconfig_assume_policy.json
+  assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "awsconfig-attach-awsconfig-policy" {
-  role       = aws_iam_role.awsconfig_role.name
+resource "aws_iam_role_policy_attachment" "awsconfig_managed_policy" {
+  role       = aws_iam_role.awsconfig.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRole"
 }
 
-resource "aws_iam_role_policy_attachment" "awsconfig-attach-localconfig-policy" {
-  role       = aws_iam_role.awsconfig_role.name
-  policy_arn = aws_iam_policy.awsconfig_policy.arn
+resource "aws_iam_role_policy_attachment" "awsconfig_local_policy" {
+  role       = aws_iam_role.awsconfig.name
+  policy_arn = aws_iam_policy.awsconfig.arn
 }
