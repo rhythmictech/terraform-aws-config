@@ -1,9 +1,9 @@
-data "aws_iam_policy_document" "awsconfig" {
+data "aws_iam_policy_document" "this" {
   statement {
     effect  = "Allow"
     actions = ["s3:PutObject"]
     resources = [
-      "${aws_s3_bucket.awsconfig_bucket.arn}/*",
+      "${aws_s3_bucket.this.arn}/*",
     ]
     condition {
       test     = "StringEquals"
@@ -15,14 +15,14 @@ data "aws_iam_policy_document" "awsconfig" {
     effect  = "Allow"
     actions = ["s3:GetBucketAcl"]
     resources = [
-      aws_s3_bucket.awsconfig_bucket.arn,
+      aws_s3_bucket.this.arn,
     ]
   }
 }
 
-resource "aws_iam_policy" "awsconfig" {
-  name_prefix = "awsconfig-"
-  policy      = data.aws_iam_policy_document.awsconfig.json
+resource "aws_iam_policy" "this" {
+  name_prefix = "awsconfig-${local.region}"
+  policy      = data.aws_iam_policy_document.this.json
 }
 
 data "aws_iam_policy_document" "assume" {
@@ -37,17 +37,17 @@ data "aws_iam_policy_document" "assume" {
   }
 }
 
-resource "aws_iam_role" "awsconfig" {
-  name_prefix        = "aws-config-role"
+resource "aws_iam_role" "this" {
+  name_prefix        = "aws-config-role-${local.region}"
   assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "awsconfig_managed_policy" {
-  role       = aws_iam_role.awsconfig.name
+resource "aws_iam_role_policy_attachment" "config_role" {
+  role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRole"
 }
 
-resource "aws_iam_role_policy_attachment" "awsconfig_local_policy" {
-  role       = aws_iam_role.awsconfig.name
-  policy_arn = aws_iam_policy.awsconfig.arn
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = aws_iam_role.this.name
+  policy_arn = aws_iam_policy.this.arn
 }
