@@ -1,29 +1,17 @@
-variable "bucket_prefix" {
-  default     = "awsconfig"
-  description = "Name of the S3 bucket to log to"
+########################################
+# General Vars
+########################################
+
+variable "bucket_name" {
+  default     = null
+  description = "Name of the S3 bucket to record to (do not use with multi-region module)"
   type        = string
 }
 
-variable "config_regions" {
-  default = [
-    "us-east-1",
-    "us-east-2",
-    "us-west-1",
-    "us-west-2",
-    "ca-central-1",
-    "eu-central-1",
-    "eu-west-1",
-    "eu-west-2",
-    "eu-west-3",
-    "ap-northeast-1",
-    "ap-northeast-2",
-    "ap-southeast-1",
-    "ap-southeast-2",
-    "ap-south-1",
-    "sa-east-1",
-  ]
-  description = "Regions to enable AWS Config in"
-  type        = list(string)
+variable "bucket_suffix" {
+  default     = "awsconfig"
+  description = "Suffix to append to S3 bucket name"
+  type        = string
 }
 
 variable "delivery_channel_name" {
@@ -32,19 +20,27 @@ variable "delivery_channel_name" {
   type        = string
 }
 
+variable "enable_global_logging" {
+  default     = true
+  description = "Enable recording of global events (E.g., IAM)"
+  type        = bool
+}
+
 variable "logging_bucket" {
-  description = "Bucket to log requests to the config bucket to"
+  default     = null
+  description = "Optional target for S3 access logging"
+  type        = string
+}
+
+variable "logging_prefix" {
+  default     = null
+  description = "Optional target prefix for S3 access logging (only used if `s3_access_logging_bucket` is set)"
   type        = string
 }
 
 variable "recorder_name" {
   default     = "awsconfig"
   description = "Name of the config recorder"
-  type        = string
-}
-
-variable "region" {
-  description = "Region S3 bucket will be created in"
   type        = string
 }
 
@@ -55,7 +51,7 @@ variable "snapshot_delivery_frequency" {
 }
 
 variable "sns_topic_arn" {
-  default     = ""
+  default     = null
   description = "SNS topic to deliver config rule notifications to"
   type        = string
 }
