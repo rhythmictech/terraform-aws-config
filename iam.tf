@@ -44,7 +44,7 @@ resource "aws_iam_role" "awsconfig" {
 
 resource "aws_iam_role_policy_attachment" "awsconfig_managed_policy" {
   role       = aws_iam_role.awsconfig.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
 }
 
 resource "aws_iam_role_policy_attachment" "awsconfig_local_policy" {
