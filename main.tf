@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "awsconfig_bucket" {
   }
 
   logging {
-    target_bucket = var.logging_bucket
+    target_bucket = "${local.account_id}-${var.region}-awsconfig"
     target_prefix = "${local.account_id}-${var.region}-awsconfig/"
   }
 
