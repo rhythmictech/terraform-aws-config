@@ -44,7 +44,7 @@ resource "aws_iam_role" "this" {
 
 resource "aws_iam_role_policy_attachment" "awsconfig_managed_policy" {
   role       = aws_iam_role.this.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+  policy_arn = "arn:${local.partition}:iam::aws:policy/service-role/AWS_ConfigRole"
 }
 
 
