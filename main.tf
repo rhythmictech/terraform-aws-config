@@ -10,7 +10,7 @@ data "aws_region" "current" {
 locals {
   account_id  = data.aws_caller_identity.current.account_id
   bucket_name = var.bucket_name == null ? "${local.account_id}-${local.region}-${var.bucket_suffix}" : var.bucket_name
-  partition = data.aws_partition.current.partition
+  partition   = data.aws_partition.current.partition
   region      = data.aws_region.current.name
 
   logging = var.logging_bucket == null ? [] : [{
@@ -19,7 +19,7 @@ locals {
   }]
 }
 
-#tfsec:ignore:AWS002
+#tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "this" {
   bucket = local.bucket_name
   acl    = "private"
