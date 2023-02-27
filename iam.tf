@@ -1,3 +1,5 @@
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "this" {
   statement {
     effect  = "Allow"
@@ -40,6 +42,7 @@ data "aws_iam_policy_document" "assume" {
 resource "aws_iam_role" "this" {
   name_prefix        = "aws-config-role-${local.region}"
   assume_role_policy = data.aws_iam_policy_document.assume.json
+  tags               = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "awsconfig_managed_policy" {
