@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "this" {
   bucket = local.bucket_name
   acl    = "private"
   tags   = merge(var.tags, {
-    "Name" = "${local.bucket_name}"
+    "Name" = local.bucket_name
   })
 
   versioning {
