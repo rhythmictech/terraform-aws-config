@@ -1,4 +1,3 @@
-
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "this" {
   statement {
@@ -19,6 +18,36 @@ data "aws_iam_policy_document" "this" {
     resources = [
       aws_s3_bucket.this.arn,
     ]
+  }
+
+  # Conditional SNS topic permissions
+  dynamic "statement" {
+    for_each = var.sns_topic_arn != null || var.create_sns_topic ? [1] : []
+    content {
+      effect    = "Allow"
+      actions   = ["sns:Publish"]
+      resources = [var.sns_topic_arn != null ? var.sns_topic_arn : aws_sns_topic.this[0].arn]
+    }
+  }
+
+  # Conditional KMS permissions for S3
+  dynamic "statement" {
+    for_each = var.grant_s3_kms_access && var.s3_bucket_kms_key_id != null ? [1] : []
+    content {
+      effect    = "Allow"
+      actions   = ["kms:Encrypt", "kms:Decrypt", "kms:ReEncrypt*", "kms:GenerateDataKey*", "kms:DescribeKey"]
+      resources = [var.s3_bucket_kms_key_id]
+    }
+  }
+
+  # Conditional KMS permissions for SNS
+  dynamic "statement" {
+    for_each = var.grant_sns_kms_access && var.sns_topic_kms_key_id != null ? [1] : []
+    content {
+      effect    = "Allow"
+      actions   = ["kms:Encrypt", "kms:Decrypt", "kms:ReEncrypt*", "kms:GenerateDataKey*", "kms:DescribeKey"]
+      resources = [var.sns_topic_kms_key_id]
+    }
   }
 }
 
